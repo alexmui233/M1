@@ -89,8 +89,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Validate password
     if(empty(test_input($_POST["password"]))){
         $password_err = "Please enter a password.";     
-    } elseif(strlen(test_input($_POST["password"])) < 3){//check password length
-        $password_err = "Password must have at least 3 characters.";
+    } elseif(strlen(test_input($_POST["password"])) < 5){//check password length
+        $password_err = "Password must have at least 5 characters.";
     } else{
         $password = test_input($_POST["password"]);
     }
