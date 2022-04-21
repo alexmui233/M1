@@ -15,9 +15,9 @@ require_once "header.php";
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 
     <!-- JS -->
-    <script src="js/wellcome.js"></script>
     <script src="js/events.js"></script>
     <style>
+        
         .divcre a:hover {
             background-color: black;
             color: white;

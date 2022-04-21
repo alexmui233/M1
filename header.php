@@ -22,8 +22,10 @@ require_once "function.php";
     <div class="navbar">
         <a class="webname">Happy Polling</a>
         <a href="index.php">Home</a>
+        <a href="createpoll.php">Create Poll</a>
         <a href="allpoll.php">All Poll</a>
-        <a href="mypoll.php">My Poll</a>
+        <a href="mycreatepoll.php">My Own Poll</a>
+        <a href="mypoll.php">My responded Poll</a>
         <div class="dropdown" style="float: right;">
             <?php if (isset($_SESSION["username"])) { ?>
                 <button class="dropbtn" onclick="droplist()">
