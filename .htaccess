@@ -1,0 +1,15 @@
+<Files .htaccess>
+order allow,deny
+deny from all
+</Files>
+
+RewriteEngine on 
+RewriteCond %{HTTP_REFERER} !^http://(www\.)?localhost [NC] 
+RewriteCond %{HTTP_REFERER} !^http://(www\.)?localhost.*$ [NC] 
+RewriteCond %{HTTP_REFERER} !^http://(www\.)?127.0.0.1 [NC] 
+RewriteCond %{HTTP_REFERER} !^http://(www\.)?127.0.0.1.*$ [NC] 
+RewriteCond %{HTTP_REFERER} !^http://(www\.)?34.96.157.137 [NC] 
+RewriteCond %{HTTP_REFERER} !^http://(www\.)?34.96.157.137.*$ [NC] 
+RewriteCond %{HTTP_REFERER} !^https://(www\.)?comp3334gp52.ddns.net [NC] 
+RewriteCond %{HTTP_REFERER} !^https://(www\.)?comp3334gp52.ddns.net.*$ [NC] 
+RewriteRule \.(gif|jpg|jpeg|png|mp4)$ - [F]
