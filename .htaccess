@@ -3,7 +3,7 @@ order allow,deny
 deny from all
 </Files>
 
-Options -Indexes FollowSymLinks
+
 RewriteEngine on 
 RewriteCond %{HTTP_REFERER} !^http://(www\.)?localhost [NC] 
 RewriteCond %{HTTP_REFERER} !^http://(www\.)?localhost.*$ [NC] 
