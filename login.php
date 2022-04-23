@@ -1,6 +1,8 @@
 <?php
 require_once "header.php";
-
+echo $csrf . '<br>';
+echo $csrf . '<br>';
+echo $csrf . '<br>';
 // Check if the user is already logged in, if yes then redirect him to event page
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
     header("location: index.php");
@@ -37,10 +39,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Validate password
     
     if(empty($_POST["password"])){
-        $password_err = "Please enter a password.";
-            
-    } 
-    else{
+        $password_err = "Please enter a password."; 
+    } elseif(!preg_match('/^[a-zA-Z0-9_]+$/', test_input($_POST["password"]))){//check the password valid
+        $password_err = "Password can only contain letters, numbers, and underscores.";
+    }else{
          $password = $_POST["password"];
           
     }
@@ -125,6 +127,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                         <br>
                                         <span style="color:red; font-size: 17px"><?php echo $password_err; ?></span>
                                         <br>
+                                        <input type="hidden" name="csrf" value="<?php echo $csrf ?>">
                                         <input type="submit" value="Log in" style="background-color: #39ac37; padding: 16px 24px; border: none; color: white; cursor: pointer;">
                                     </div>
                                 </fieldset>
