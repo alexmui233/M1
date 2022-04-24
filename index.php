@@ -1,8 +1,6 @@
 <?php
 require_once "header.php";
-echo $csrf . '<br>';
-echo $csrf . '<br>';
-echo $csrf . '<br>';
+
 ?>
 
 <!doctype html>

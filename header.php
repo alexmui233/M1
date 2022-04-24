@@ -5,19 +5,13 @@ require_once "config.php";
 require_once "function.php";
 
 //create a key for hash_hmac function
-if (empty($_SESSION['key']))
-$_SESSION['key'] = bin2hex(random_bytes(32));
-
-//create CSRF token
-$csrf = hash_hmac('sha256', 'this is some string: index.php', $_SESSION['key']);
+if (empty($_SESSION['token'])){
+    $_SESSION['token'] = md5(uniqid(mt_rand(), true));
+}
 
 //validate token
-if (isset($_POST['submit'])) {
-    if (hash_equals($csrf, $_POST['csrf'])) {
-        echo "CSRF Token successful!";
-    } else
-        echo 'CSRF Token Failed!';
-}
+$token = filter_input(INPUT_POST, 'token');
+
 ?>
 
 <!doctype html>

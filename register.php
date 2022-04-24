@@ -13,140 +13,146 @@ $username_err = $password_err = $confirm_password_err = $email_err = $nickname_e
 // Processing form data when form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    // Validate username
-
-    if (!filter_input(INPUT_POST, "username")) {
-        $username_err = "Please enter a username.";
-    } elseif (!preg_match('/^[a-zA-Z0-9_]+$/', test_input($_POST["username"]))) { //check the username valid
-        $username_err = "Username can only contain letters, numbers, and underscores.";
+    if (!$token || $token !== $_SESSION['token']) {
+        // return 405 http status code
+        header($_SERVER['SERVER_PROTOCOL'] . ' 405 Method Not Allowed');
+        exit;
     } else {
-        // Prepare a select statement
-        $sql = "SELECT uid FROM user WHERE username = :username";
 
-        if ($stmt = $pdo->prepare($sql)) {
-            // Bind variables to the prepared statement as parameters
-            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+        // Validate username
+        if (!filter_input(INPUT_POST, "username")) {
+            $username_err = "Please enter a username.";
+        } elseif (!preg_match('/^[a-zA-Z0-9_]+$/', test_input($_POST["username"]))) { //check the username valid
+            $username_err = "Username can only contain letters, numbers, and underscores.";
+        } else {
+            // Prepare a select statement
+            $sql = "SELECT uid FROM user WHERE username = :username";
 
-            // Set parameters
-            $param_username = test_input($_POST["username"]);
+            if ($stmt = $pdo->prepare($sql)) {
+                // Bind variables to the prepared statement as parameters
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
 
-            // Attempt to execute the prepared statement
-            if ($stmt->execute()) {
-                if ($stmt->rowCount() == 1) {
-                    $username_err = "This username is already taken.";
+                // Set parameters
+                $param_username = test_input($_POST["username"]);
+
+                // Attempt to execute the prepared statement
+                if ($stmt->execute()) {
+                    if ($stmt->rowCount() == 1) {
+                        $username_err = "This username is already taken.";
+                    } else {
+                        $username = test_input($_POST["username"]);
+                    }
                 } else {
-                    $username = test_input($_POST["username"]);
+                    echo "Oops! Something went wrong. Please try again later.";
                 }
-            } else {
-                echo "Oops! Something went wrong. Please try again later.";
+
+                // Close statement
+                unset($stmt);
             }
-
-            // Close statement
-            unset($stmt);
         }
-    }
 
 
-    // Validate nickname
-    if (!filter_input(INPUT_POST, "nickname")) {
-        $nickname_err = "Please enter a nickname.";
-    } else {
-        $nickname = test_input($_POST["nickname"]);
-    }
+        // Validate nickname
+        if (!filter_input(INPUT_POST, "nickname")) {
+            $nickname_err = "Please enter a nickname.";
+        } else {
+            $nickname = test_input($_POST["nickname"]);
+        }
 
-    // Validate email
+        // Validate email
 
-    if (!filter_input(INPUT_POST, "email")) {
-        $email_err = "Please enter a email.";
-    } else if (!filter_var(test_input($_POST["email"]), FILTER_VALIDATE_EMAIL)) {
-        // check if e-mail address is well-formed
-        $email_err = "Invalid email format";
-    } else {
-        // Prepare a select statement
-        $sql = "SELECT uid FROM user WHERE email = :email";
+        if (!filter_input(INPUT_POST, "email")) {
+            $email_err = "Please enter a email.";
+        } else if (!filter_var(test_input($_POST["email"]), FILTER_VALIDATE_EMAIL)) {
+            // check if e-mail address is well-formed
+            $email_err = "Invalid email format";
+        } else {
+            // Prepare a select statement
+            $sql = "SELECT uid FROM user WHERE email = :email";
 
-        if ($stmt = $pdo->prepare($sql)) {
-            // Bind variables to the prepared statement as parameters
-            $stmt->bindParam(":email", $param_email, PDO::PARAM_STR);
+            if ($stmt = $pdo->prepare($sql)) {
+                // Bind variables to the prepared statement as parameters
+                $stmt->bindParam(":email", $param_email, PDO::PARAM_STR);
 
-            // Set parameters
-            $param_email = test_input($_POST["email"]);
+                // Set parameters
+                $param_email = test_input($_POST["email"]);
 
-            // Attempt to execute the prepared statement
-            if ($stmt->execute()) {
-                if ($stmt->rowCount() == 1) {
-                    $email_err = "This email is already taken.";
+                // Attempt to execute the prepared statement
+                if ($stmt->execute()) {
+                    if ($stmt->rowCount() == 1) {
+                        $email_err = "This email is already taken.";
+                    } else {
+                        $email = test_input($_POST["email"]);
+                    }
                 } else {
-                    $email = test_input($_POST["email"]);
+                    echo "Oops! Something went wrong. Please try again later.";
                 }
-            } else {
-                echo "Oops! Something went wrong. Please try again later.";
+
+                // Close statement
+                unset($stmt);
             }
-
-            // Close statement
-            unset($stmt);
         }
-    }
 
 
 
 
-    // Validate password
-    if (!filter_input(INPUT_POST, "password")) {
-        $password_err = "Please enter a password.";
-    } elseif (!preg_match('/^[a-zA-Z0-9_]+$/', test_input($_POST["password"]))) { //check the password valid
-        $password_err = "Password can only contain letters, numbers, and underscores.";
-    } elseif (strlen(test_input($_POST["password"])) < 5) { //check password length
-        $password_err = "Password must have at least 5 characters.";
-    } else {
-        $password = test_input($_POST["password"]);
-    }
-
-    // Validate confirm password
-    if (!filter_input(INPUT_POST, "confirm_password")) {
-        $confirm_password_err = "Please confirm password.";
-    } else {
-        $confirm_password = test_input($_POST["confirm_password"]);
-        if (empty($password_err) && ($password != $confirm_password)) { //check the password match confirm password
-            $confirm_password_err = "Password did not match.";
+        // Validate password
+        if (!filter_input(INPUT_POST, "password")) {
+            $password_err = "Please enter a password.";
+        } elseif (!preg_match('/^[a-zA-Z0-9_]+$/', test_input($_POST["password"]))) { //check the password valid
+            $password_err = "Password can only contain letters, numbers, and underscores.";
+        } elseif (strlen(test_input($_POST["password"])) < 5) { //check password length
+            $password_err = "Password must have at least 5 characters.";
+        } else {
+            $password = test_input($_POST["password"]);
         }
-    }
 
-    // Check input errors before inserting in database
-    if (empty($username_err) && empty($password_err) && empty($confirm_password_err) && empty($email_err)  && empty($nickname_err)) {
-
-        // Prepare an insert statement
-        $sql = "INSERT INTO user (`username`, `nickname`, `email`, `password`, `image`) VALUES (?, ?, ?, ?, ?)";
-
-        if ($stmt = $pdo->prepare($sql)) {
-            // Bind variables to the prepared statement as parameters
-            $param_image = $_FILES["image"];
-            $image_name = upload_img($param_image);
-
-            // Set parameters
-            $stmt->bindParam(1, $username, PDO::PARAM_STR);
-            $stmt->bindParam(2, $nickname, PDO::PARAM_STR);
-            $stmt->bindParam(3, $email, PDO::PARAM_STR);
-            $stmt->bindParam(4, $param_password, PDO::PARAM_STR);
-            $stmt->bindParam(5, $image_name, PDO::PARAM_STR);
-
-            $param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
-
-            // Attempt to execute the prepared statement
-            if ($stmt->execute()) {
-                // Redirect to register success page
-                header("location: registersuccess.php");
-            } else {
-                echo "Oops! Something went wrong. Please try again later.";
+        // Validate confirm password
+        if (!filter_input(INPUT_POST, "confirm_password")) {
+            $confirm_password_err = "Please confirm password.";
+        } else {
+            $confirm_password = test_input($_POST["confirm_password"]);
+            if (empty($password_err) && ($password != $confirm_password)) { //check the password match confirm password
+                $confirm_password_err = "Password did not match.";
             }
-
-            // Close statement
-            unset($stmt);
         }
-    }
 
-    // Close connection
-    unset($pdo);
+        // Check input errors before inserting in database
+        if (empty($username_err) && empty($password_err) && empty($confirm_password_err) && empty($email_err)  && empty($nickname_err)) {
+
+            // Prepare an insert statement
+            $sql = "INSERT INTO user (`username`, `nickname`, `email`, `password`, `image`) VALUES (?, ?, ?, ?, ?)";
+
+            if ($stmt = $pdo->prepare($sql)) {
+                // Bind variables to the prepared statement as parameters
+                $param_image = $_FILES["image"];
+                $image_name = upload_img($param_image);
+
+                // Set parameters
+                $stmt->bindParam(1, $username, PDO::PARAM_STR);
+                $stmt->bindParam(2, $nickname, PDO::PARAM_STR);
+                $stmt->bindParam(3, $email, PDO::PARAM_STR);
+                $stmt->bindParam(4, $param_password, PDO::PARAM_STR);
+                $stmt->bindParam(5, $image_name, PDO::PARAM_STR);
+
+                $param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
+
+                // Attempt to execute the prepared statement
+                if ($stmt->execute()) {
+                    // Redirect to register success page
+                    header("location: registersuccess.php");
+                } else {
+                    echo "Oops! Something went wrong. Please try again later.";
+                }
+
+                // Close statement
+                unset($stmt);
+            }
+        }
+
+        // Close connection
+        unset($pdo);
+    }
 }
 
 ?>
@@ -200,8 +206,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <br>
                             <span class="" style="color:red; font-size: 17px"><?php ?></span>
                             <br>
-                            <input type="hidden" name="csrf" value="<?php echo $csrf ?>">
-                            <input class="submitbtn" type="submit" value="Create account" style="border: none; cursor: pointer;">
+                            <input type="hidden" name="csrf" value="<?php echo $_SESSION['token'] ?>">
+                            <input class="submitbtn" type="submit" name="submit" value="Create account" style="border: none; cursor: pointer;">
                         </div>
                     </fieldset>
                 </form>
