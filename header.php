@@ -5,9 +5,7 @@ require_once "config.php";
 require_once "function.php";
 
 //create a key for hash_hmac function
-if (empty($_SESSION['token'])){
-    $_SESSION['token'] = md5(uniqid(mt_rand(), true));
-}
+$_SESSION['token'] = md5(uniqid(mt_rand(), true));
 
 //validate token
 $token = filter_input(INPUT_POST, 'token');

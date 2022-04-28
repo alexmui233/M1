@@ -2,13 +2,14 @@
 require_once "header.php";
 
 // Check if the user is already logged in, if yes then redirect him to event page
+if(isset($_COOKIE["username"]) && isset($_COOKIE["username"] ))
+{
+ header("location: index.php");
+}
 if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
     header("location: index.php");
 }
-/* if(isset($_COOKIE["username"]) && isset($_COOKIE["password"]))
-{
- header("location:index.php");
-} */
+
 
 // Processing form data when form is submitted
 //Define variables and initalise with empty values
@@ -17,85 +18,79 @@ $username_err = $password_err = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    if (!$token || $token !== $_SESSION['token']) {
-        // return 405 http status code
-        header($_SERVER['SERVER_PROTOCOL'] . ' 405 Method Not Allowed');
-        exit;
+    if (!filter_input(INPUT_POST, "username")) {
+
+        $username_err = "Please enter a username.";
     } else {
-        if (!filter_input(INPUT_POST, "username")) {
+        $sql = "SELECT uid FROM user WHERE username = ?";
 
-            $username_err = "Please enter a username.";
-        } else {
-            $sql = "SELECT uid FROM user WHERE username = ?";
-
-            $stmt = $pdo->prepare($sql);
-            $stmt->bindParam(1, $_POST['username'], PDO::PARAM_STR);
-            if ($stmt->execute()) {
-                if ($stmt->rowCount() == 1) {
-                    $username = $_POST["username"];
-                }
-            }
-
-            // Close statement
-            unset($stmt);
-        }
-
-        // Validate password
-
-        if (!filter_input(INPUT_POST, "password")) {
-            $password_err = "Please enter a password.";
-        } elseif (!preg_match('/^[a-zA-Z0-9_]+$/', test_input($_POST["password"]))) { //check the password valid
-            $password_err = "Password can only contain letters, numbers, and underscores.";
-        } else {
-            $password = $_POST["password"];
-        }
-
-        //Validate credentials
-        if (empty($username_err) && empty($password_err)) {
-            //Prepare a select statement
-            $sql = "SELECT uid, username, password FROM user WHERE username = ?";
-
-            if ($stmt = $pdo->prepare($sql)) {
-                //Bind variables to the prepared statement as parameters
-                $stmt->bindParam(1, $username, PDO::PARAM_STR);
-
-                //Attempt to execute the prepared statement
-                if ($stmt->execute()) {
-
-                    //Check if username exists, if yes then verify password
-                    if ($stmt->rowCount() == 1) {
-                        $fetch = $stmt->fetch();
-                        $id = $fetch["uid"];
-                        $username = $fetch["username"];
-                        $hashed_password = $fetch["password"];
-
-                        if (password_verify($_POST['password'], $fetch['password'])) {
-
-                            // Store data in session variables
-                            $_SESSION["loggedin"] = true;
-                            $_SESSION['username'] = $username;
-                            $_SESSION['uid'] = $fetch['uid'];
-                            setcookie('username', $username, time() + 3600);
-                            setcookie('password', $_POST['password'], time() + 3600);
-                            header("location: index.php");
-                        } else {
-
-                            $password_err = "The password you entered was not valid.";
-                        }
-                    } else {
-                        //Display an error message if username doesn't exist
-                        $username_err = "No account found with that username.";
-                    }
-                }
-
-                // Close statement
-                unset($stmt);
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(1, $_POST['username'], PDO::PARAM_STR);
+        if ($stmt->execute()) {
+            if ($stmt->rowCount() == 1) {
+                $username = $_POST["username"];
             }
         }
 
         // Close statement
         unset($stmt);
     }
+
+    // Validate password
+
+    if (!filter_input(INPUT_POST, "password")) {
+        $password_err = "Please enter a password.";
+    } elseif (!preg_match('/^[a-zA-Z0-9_]+$/', test_input($_POST["password"]))) { //check the password valid
+        $password_err = "Password can only contain letters, numbers, and underscores.";
+    } else {
+        $password = $_POST["password"];
+    }
+
+    //Validate credentials
+    if (empty($username_err) && empty($password_err)) {
+        //Prepare a select statement
+        $sql = "SELECT uid, username, password FROM user WHERE username = ?";
+
+        if ($stmt = $pdo->prepare($sql)) {
+            //Bind variables to the prepared statement as parameters
+            $stmt->bindParam(1, $username, PDO::PARAM_STR);
+
+            //Attempt to execute the prepared statement
+            if ($stmt->execute()) {
+
+                //Check if username exists, if yes then verify password
+                if ($stmt->rowCount() == 1) {
+                    $fetch = $stmt->fetch();
+                    $id = $fetch["uid"];
+                    $username = $fetch["username"];
+                    $hashed_password = $fetch["password"];
+
+                    if (password_verify($_POST['password'], $fetch['password'])) {
+
+                        // Store data in session variables
+                        $_SESSION["loggedin"] = true;
+                        $_SESSION['username'] = $username;
+                        $_SESSION['uid'] = $fetch['uid'];
+                        setcookie('username', $username, time() + 3600);
+                        setcookie('password', $_POST['password'], time() + 3600);
+                        header("location: index.php");
+                    } else {
+
+                        $password_err = "The password you entered was not valid.";
+                    }
+                } else {
+                    //Display an error message if username doesn't exist
+                    $username_err = "No account found with that username.";
+                }
+            }
+
+            // Close statement
+            unset($stmt);
+        }
+    }
+
+    // Close statement
+    unset($stmt);
 }
 
 ?>
