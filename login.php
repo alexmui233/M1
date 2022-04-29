@@ -1,15 +1,9 @@
 <?php
 require_once "header.php";
 
-// Check if the user is already logged in, if yes then redirect him to event page
-if(isset($_COOKIE["username"]) && isset($_COOKIE["username"] ))
-{
- header("location: index.php");
-}
 if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
     header("location: index.php");
 }
-
 
 // Processing form data when form is submitted
 //Define variables and initalise with empty values
@@ -37,7 +31,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Validate password
-
     if (!filter_input(INPUT_POST, "password")) {
         $password_err = "Please enter a password.";
     } elseif (!preg_match('/^[a-zA-Z0-9_]+$/', test_input($_POST["password"]))) { //check the password valid
@@ -71,8 +64,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $_SESSION["loggedin"] = true;
                         $_SESSION['username'] = $username;
                         $_SESSION['uid'] = $fetch['uid'];
-                        setcookie('username', $username, time() + 3600);
-                        setcookie('password', $_POST['password'], time() + 3600);
+                        
+                        setcookie('username', $username, time() + 3600, "/", "", true, true);
+                        setcookie('uid', $fetch['uid'], time() + 3600, "/", "", true, true);    
                         header("location: index.php");
                     } else {
 

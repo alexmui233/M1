@@ -1,5 +1,15 @@
 <?php
+ini_set( 'session.cookie_httponly', true );
+ini_set( 'session.cookie_secure', true );
+ini_set( 'session.cookie_samesite', "Lax");
+
+/* $seconds_to_cache = 3600;
+$ts = gmdate("D, d M Y H:i:s", time() + $seconds_to_cache) . " GMT";
+header("Expires: $ts");
+header("Pragma: cache");
+header("Cache-Control: max-age=$seconds_to_cache"); */
 session_start();
+
 // Include config file
 require_once "config.php";
 require_once "function.php";
@@ -9,6 +19,15 @@ $_SESSION['token'] = md5(uniqid(mt_rand(), true));
 
 //validate token
 $token = filter_input(INPUT_POST, 'token');
+
+// Check if the user is already logged in, if yes then redirect him to home page
+if(!isset($_COOKIE['username']) || !isset($_COOKIE['uid'])) {
+   
+} else {
+    $_SESSION["loggedin"] = true;
+    $_SESSION['username'] = $_COOKIE['username'];
+    $_SESSION['uid'] = $_COOKIE['uid'];
+}
 
 ?>
 
@@ -21,6 +40,7 @@ $token = filter_input(INPUT_POST, 'token');
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $GLOBALS["appConfig"]["appTitle"] ?><?php echo (!empty($pageTitle) ? ' - ' . $pageTitle : '') ?></title>
+    
     <!-- JS -->
     <script src="js/events.js"></script>
 </head>
