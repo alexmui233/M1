@@ -3,11 +3,6 @@ ini_set( 'session.cookie_httponly', true );
 ini_set( 'session.cookie_secure', true );
 ini_set( 'session.cookie_samesite', "Lax");
 
-/* $seconds_to_cache = 3600;
-$ts = gmdate("D, d M Y H:i:s", time() + $seconds_to_cache) . " GMT";
-header("Expires: $ts");
-header("Pragma: cache");
-header("Cache-Control: max-age=$seconds_to_cache"); */
 session_start();
 
 // Include config file

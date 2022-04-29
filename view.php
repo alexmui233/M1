@@ -53,7 +53,7 @@ checklogin();
                                         
                                         foreach($data as $row) {
                                             print(' <div class="reformdiv" style="margin: 10px auto;">
-                                                        <p style="float: left; width: 150px; margin: 0px; font-size: 16px;">title: ' . $row['title'] .'</p><p style="float: right;  margin: 0px; font-size: 16px;"> votes: ' . $row['votes'] . '<img src="picture\people.svg" alt="" class="svgpic"></p>
+                                                        <p style="float: left; width: 150px; margin: 0px; font-size: 16px;">title: ' . $row['title'] .'</p><p style="float: right;  margin: 0px; font-size: 16px;"> voters: ' . $row['votes'] . '<img src="picture\people.svg" alt="" class="svgpic"></p>
                                                         <br>
                                                         <p style=" margin: 0px; font-size: 16px;">question: ' . $row['question'] . '</p>
                                                         <hr>

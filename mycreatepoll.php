@@ -60,7 +60,7 @@ checklogin();
                         <div style="width: 300px;">
                             title: ' . $row['title'] . ' 
                             owner: ' . $row['owner'] . '<br>
-                            votes: ' . $row['votes'] . ' <img class="svgpic" src="picture\people.svg" alt="votespic"><br>
+                            voters: ' . $row['votes'] . ' <img class="svgpic" src="picture\people.svg" alt="votespic"><br>
                             <div >question: ' . $row['question'] . '</div>
                         </div>
                     </div>              
