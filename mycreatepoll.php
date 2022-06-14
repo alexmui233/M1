@@ -27,8 +27,8 @@ checklogin();
 <body style="background-color: #DFDFDF;">
 
     <div class="apdiv" style="background-color: #DFDFDF;">
-        <h1>Your createed poll are here</h1>
-        <h2>You can see what poll you createed are listed below</h2>
+        <h1>Your created poll</h1>
+        <h2>You can see what poll you created as listed below</h2>
 
         <br>
         </h2>

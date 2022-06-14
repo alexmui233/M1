@@ -55,7 +55,7 @@ require_once "config.php";
     <body>
     
         <div class="divcre">
-            <h1>Register Sucessfull</h1>
+            <h1>Register Successfull</h1>
             <p>Let log in to join the polls</p>
             <a class="gologinbtn" href="login.php">Log in</a>
         </div>
