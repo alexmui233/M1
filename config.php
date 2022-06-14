@@ -5,8 +5,8 @@ $appConfig=array(
 );
 
 define('DB_SERVER', 'localhost');
-define('DB_USERNAME', 'webserver');//webserver
-define('DB_PASSWORD', 'eie3117');//eie3117
+define('DB_USERNAME', 'root');//webserver
+define('DB_PASSWORD', '');//eie3117
 define('DB_NAME', 'poll');
  
 //Attempt to connect to MySQL database
